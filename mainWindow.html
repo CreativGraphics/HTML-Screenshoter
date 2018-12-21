@@ -45,13 +45,13 @@
         let configHeight = 0
         let configAutoHeight = false
 
-        function takeScreenshot(path) {
+        const takeScreenshot = (path) => {
             html2canvas(document.querySelector("section"), {
                 allowTaint: true,
                 width: parseInt(configWidth),
                 height: configAutoHeight ? $("body").height() : parseInt(configHeight),
                 foreignObjectRendering: true,
-            }).then(function (canvas) {
+            }).then((canvas) => {
                 const imageHash = canvas.toDataURL()
 
                 const base64Data = imageHash.replace(/^data:image\/(png|jpg);base64,/, "")
@@ -98,14 +98,14 @@
             }
         }, 10)
 
-        function startLoop(dir){
+        const startLoop = (dir) => {
             loopFiles(dir)
             setTimeout(() => {
                 loopArray(filePaths)
             }, 300)
         }
 
-        function loopFiles(dir) {
+        const loopFiles = (dir) => {
             filePaths = []
             fs.readdir(dir, (err, files) => {
                 if (err) {
@@ -126,7 +126,7 @@
             })
         }
 
-        async function asyncForEach(array, callback){
+        const asyncForEach = async (array, callback) => {
             for(let index = 0; index < array.length; index++){
                 await callback(array[index], index, array)
             }
@@ -151,7 +151,7 @@
 
         }
 
-        function loadContent(path) {
+        const loadContent = (path) => {
             fs.readFile(path, 'utf8', (err, data) => {
                 if (err) {
                     console.error("Cannot read html file. " + err)
