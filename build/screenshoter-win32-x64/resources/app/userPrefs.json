@@ -1,0 +1,10 @@
+{
+  "screenshot": {
+    "width": "1920",
+    "height": "1080",
+    "autoheight": true
+  },
+  "path": null,
+  "delay": "2000",
+  "time": "1000"
+}

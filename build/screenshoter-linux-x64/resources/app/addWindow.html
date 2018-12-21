@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HTML Screenshoter</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script>
+        if (typeof module === 'object'){
+            window.module = module
+            module = undefined
+        }
+    </script>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row" style="height: 100vh">
+            <div class="col-12 align-self-center">
+                <form>
+                    <div class="form-group">
+                        <label for="folder">Select folder with HTML files:</label>
+                        <input type="text" id="folder" class="form-control" required placeholder="C:/path/to/folder">
+                    </div>
+                    <div class="form-group">
+                        <label for="delay">Screenshot delay (ms)</label>
+                        <input type="number" id="delay" class="form-control" required placeholder="Default: 2000" value="2000">
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time for screenshot to process (ms)</label>
+                        <input type="number" id="time" class="form-control" required placeholder="Default: 1000" value="1000">
+                    </div>
+                    <div class="form-group">
+                        <label for="width">Screenshot width</label>
+                        <input type="number" id="width" class="form-control" required placeholder="Default: 1920" value="1920">
+                    </div>
+                    <div class="form-group">
+                        <label for="height">Screenshot height</label>
+                        <input type="number" id="height" class="form-control" required placeholder="Default: 1080" value="1080">
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox my-1 mr-sm-2">
+                            <input type="checkbox" class="custom-control-input" id="autoHeight">
+                            <label for="autoHeight" class="custom-control-label">Automatic height</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">Start processing</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const electron = require('electron')
+
+        const {ipcRenderer} = electron
+
+        const form = document.querySelector('form')
+
+        let prefs
+
+        form.addEventListener('submit', submitForm)
+
+        ipcRenderer.on('item:userprefs', (e, item) => {
+            $("#folder").val(item["path"])
+            $("#width").val(item["screenshot"]["width"])
+            $("#height").val(item["screenshot"]["height"])
+            $("#delay").val(item["delay"])
+            $("#time").val(item["time"])
+            $("#autoHeight").prop('checked', item["screenshot"]["autoheight"])
+            console.log(item)
+        })
+
+        function submitForm(e){
+            e.preventDefault()
+
+            const item = document.querySelector('#folder').value
+            const delay = document.querySelector('#delay').value
+            const time = document.querySelector('#time').value
+            const width = document.querySelector('#width').value
+            const height = document.querySelector('#height').value
+
+            const autoHeight = document.querySelector("#autoHeight").checked ? true : false
+
+            ipcRenderer.send('item:add', item)
+            ipcRenderer.send('item:delay', delay)
+            ipcRenderer.send('item:time', time)
+            ipcRenderer.send('item:width', width)
+            ipcRenderer.send('item:height', height)
+            ipcRenderer.send('item:autoheight', autoHeight)
+        }
+    </script>
+</body>
+</html>
